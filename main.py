@@ -48,7 +48,7 @@ def compress_data(audio_data):
         if current_sign and audio_data[i] >= max_amplitude:
             max_amplitude = audio_data[i]
         #searching for max negative amplitude
-        elif audio_data[i] < min_amplitude:
+        elif not current_sign and audio_data[i] < min_amplitude:
             min_amplitude = audio_data[i]
         #updating the sign
         current_sign = True if audio_data[i] >= 0 else False
@@ -62,6 +62,9 @@ def compress_data(audio_data):
             max_amplitude = float('-inf')
             min_amplitude = float('inf')
             count = 0
+        elif i == len(audio_data)-1:
+            compressed_audio_data.append([max_amplitude if previous_sign else min_amplitude,
+                                          '{:.2f}'.format(1/(count*2/sample_rate))])
     return compressed_audio_data
 if __name__ == "__main__":
     delete_old_results_file()
@@ -75,8 +78,6 @@ if __name__ == "__main__":
         bits = int(info.subtype.split("_")[1])
         selected_file = os.path.basename(selected_file)
         audio_data = np.multiply(audio_data, 2**(bits-1))
-        print(info.channels)
-        print(info.samplerate)
         label = ""
         if info.duration < 2:
                 time = [i / sample_rate * 1000 for i in range(len(audio_data))]
