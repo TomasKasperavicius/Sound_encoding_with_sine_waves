@@ -27,10 +27,10 @@ def calculate_file_size_differance(fileA, fileB):
             fileA_size = fileB_size
             fileB_size = temp
         #compare file sizes
-        ratio = int(fileB_size/fileA_size)
+        ratio = '{:.2f}'.format(fileB_size/fileA_size)
         print(f"{os.path.basename(fileA)} occupies {fileA_size} bytes.")
         print(f"{os.path.basename(fileB)} occupies {fileB_size} bytes.")
-        print(f"{os.path.basename(fileA)} occupies {ratio} time{'s' if ratio != 1 else ''} less disk space than {os.path.basename(fileB)}.")
+        print(f"{os.path.basename(fileA)} occupies {ratio} times less disk space than {os.path.basename(fileB)}.")
     else:
         print(f"The file {fileA} and/or file {fileB} does not exist.")
     
@@ -56,7 +56,8 @@ def compress_data(audio_data):
         if current_sign != previous_sign:
             # 1/(count*2/sample_rate) T = count/sample_rate, F = 1/T,
             # count*2 because we are calculating the frequency for the whole sine wave
-            compressed_audio_data.append([max_amplitude if previous_sign else min_amplitude,'{:.2f}'.format(1/(count*2/sample_rate))])
+            compressed_audio_data.append([max_amplitude if previous_sign else min_amplitude,
+                                          '{:.2f}'.format(1/(count*2/sample_rate))])
             previous_sign = current_sign
             max_amplitude = float('-inf')
             min_amplitude = float('inf')
@@ -74,7 +75,8 @@ if __name__ == "__main__":
         bits = int(info.subtype.split("_")[1])
         selected_file = os.path.basename(selected_file)
         audio_data = np.multiply(audio_data, 2**(bits-1))
-
+        print(info.channels)
+        print(info.samplerate)
         label = ""
         if info.duration < 2:
                 time = [i / sample_rate * 1000 for i in range(len(audio_data))]
